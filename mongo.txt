@@ -1,0 +1,74 @@
+package com.example.demo11;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection="Book")
+public class Book {
+ @Id
+ private int id;
+ private String bookName;
+ private String authorName;
+public int getId() {
+	return id;
+}
+public void setId(int id) {
+	this.id = id;
+}
+public String getBookName() {
+	return bookName;
+}
+public void setBookName(String bookName) {
+	this.bookName = bookName;
+}
+public String getAuthorName() {
+	return authorName;
+}
+public void setAuthorName(String authorName) {
+	this.authorName = authorName;
+}
+ 
+}
+
+package com.example.demo11;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import com.example.demo11.Book;
+import com.example.demo11.BookRepo;
+import java.util.List;
+@RestController
+public class BookController {
+   @Autowired
+   private BookRepo repo;
+   @PostMapping("/addbook")
+   public String saveBook(@RequestBody Book book) {
+   repo.save(book);
+   return "added successfully";
+   }
+  @GetMapping("/findallbooks")
+  public List<Book>getBooks(){
+	  return repo.findAll();
+  }
+  @DeleteMapping("/delete/{id}")
+  public String deleteBook(@PathVariable int id) {
+	  repo.deleteById(id);
+	  return "delete successfully";
+  }
+}
+
+package com.example.demo11;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import com.example.demo11.Book;
+public interface BookRepo 
+ extends MongoRepository<Book,Integer>{
+}
+
+
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=BookStore
+server.port=9999
